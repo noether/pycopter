@@ -3,7 +3,6 @@ import matplotlib.pyplot as pl
 import numpy as np
 
 import quadrotor as quad
-import formation as form
 import quadlog
 import animation as ani
 
@@ -37,7 +36,7 @@ q1 = quad.quadrotor(1, m, l, J, CDl, CDr, kt, km, kw, \
         att_0, pqr_0, xyz_0, v_ned_0, w_0)
 
 # Simulation parameters
-tf = 45
+tf = 120
 dt = 1e-2
 time = np.linspace(0, tf, tf/dt)
 it = 0
@@ -139,3 +138,5 @@ pl.xlabel("Time [s]")
 pl.ylabel("Estimators value")
 pl.grid()
 pl.legend()
+
+pl.pause(0)

@@ -191,3 +191,5 @@ pl.xlabel("Time [s]")
 pl.ylabel("Formation distance error [m]")
 pl.grid()
 pl.legend()
+
+pl.pause(0)

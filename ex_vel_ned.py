@@ -3,7 +3,6 @@ import matplotlib.pyplot as pl
 import numpy as np
 
 import quadrotor as quad
-import formation as form
 import quadlog
 import animation as ani
 
@@ -139,3 +138,5 @@ pl.xlabel("Time [s]")
 pl.ylabel("Estimators value")
 pl.grid()
 pl.legend()
+
+pl.pause(0)
