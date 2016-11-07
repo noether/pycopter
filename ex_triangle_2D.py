@@ -57,11 +57,11 @@ tilde_mu = 0e-2*np.array([1, 1, 1])
 fc = form.formation_distance(2, 1, dtriang, mu, tilde_mu, Btriang, 5e-2, 5e-1)
 
 # Simulation parameters
-tf = 100
-dt = 1e-2
+tf = 60
+dt = 5e-2
 time = np.linspace(0, tf, tf/dt)
 it = 0
-frames = 50
+frames = 100
 
 # Data log
 q1_log = quadlog.quadlog(time)
@@ -180,18 +180,18 @@ pl.grid()
 pl.legend()
 
 pl.figure(3)
-pl.plot(time, -q1_log.xyz_h[:, 2], label="q1")
-pl.plot(time, -q2_log.xyz_h[:, 2], label="q2")
-pl.plot(time, -q3_log.xyz_h[:, 2], label="q3")
+pl.plot(time, -q1_log.xyz_h[:, 2], label="$q_1$")
+pl.plot(time, -q2_log.xyz_h[:, 2], label="$q_2$")
+pl.plot(time, -q3_log.xyz_h[:, 2], label="$q_3$")
 pl.xlabel("Time [s]")
 pl.ylabel("Altitude [m]")
 pl.grid()
-pl.legend()
+pl.legend(loc=2)
 
 pl.figure(4)
-pl.plot(time, Ed_log[:, 0], label="e1")
-pl.plot(time, Ed_log[:, 1], label="e2")
-pl.plot(time, Ed_log[:, 2], label="e3")
+pl.plot(time, Ed_log[:, 0], label="$e_1$")
+pl.plot(time, Ed_log[:, 1], label="$e_2$")
+pl.plot(time, Ed_log[:, 2], label="$e_3$")
 pl.xlabel("Time [s]")
 pl.ylabel("Formation distance error [m]")
 pl.grid()

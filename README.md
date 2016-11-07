@@ -3,7 +3,7 @@ QUADCOPTER(s) SIMULATOR
 
 Author: H. Garcia de Marina  
 Contact mail: noeth3r@gmail.com  
-Webpage/Forum: http://masteringrobotics.com/tools/pycopter  
+Webpage/Forum: http://dobratech.com/tools/pycopter  
 Licence: GNU GPL V2, http://www.gnu.org/licenses/gpl-2.0.en.html
 
 Easy and intuitive simulator of quadcopters in Python.
