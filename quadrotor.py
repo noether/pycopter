@@ -36,6 +36,9 @@ class quadrotor:
         self.crashed = 0 # Ground hit?
 
         ## GNC variables
+        # Geometric (1) or std (0) attitude controller
+        self.att_con = 1
+
         # Gains for the attitude controller
         self.kp = 2
         self.kq = 2
@@ -53,6 +56,9 @@ class quadrotor:
         self.k_xi_CD_e_v = 1e-3
         self.e_alt = 0 # We need it for the estimator xi_g
         self.e_v = np.array([0, 0]) # We need it for the estimator xi_Cd
+        # Gains for geometric att controller
+        self.k_eR = 5e-3
+        self.k_om = 1e-2
 
         self.T_d = 0 # Desired thrust [N]
         self.lmn_d = np.array([0.0, 0.0, 0.0]) # Desired angular momentum [N m]
@@ -83,6 +89,21 @@ class quadrotor:
 
         self.lmn_d[2] = -self.J[2, 2]*(epsi + self.kr*self.pqr[2])
 
+    def control_att_geometric(self):
+        R = self.Rot_bn().transpose()
+        Rd = self.Rotd_bn(self.att_d[0], self.att_d[1], self.att_d[2]).transpose()
+
+        e_RM = 0.5*(Rd.transpose().dot(R) - R.transpose().dot(Rd))
+        e_R = self.build_vector_from_tensor(e_RM)
+
+        om = np.array([self.pqr[0], self.pqr[1], self.pqr[2]])
+        e_om = om
+
+        M = -self.k_eR*e_R -self.k_om*e_om + np.cross(om, self.J.dot(om))
+
+        self.lmn_d = M
+
+
     ## Lyapunov based on controllers
     def set_xyz_ned_lya(self, xyz_d):
         e_alt  = self.xyz[2] - xyz_d[2]
@@ -101,7 +122,11 @@ class quadrotor:
 
         # Control motors
         self.att_d = np.array([phi_d, the_d, self.yaw_d])
-        self.control_att()
+        if self.att_con == 0:
+            self.control_att()
+        elif self.att_con == 1:
+            self.control_att_geometric()
+
         self.w_d = np.sqrt(self.Tlmn_to_w.dot(np.append(self.T_d, self.lmn_d)))
 
     def set_a_2D_alt_lya(self, a_2d_d, altitude_d):
@@ -118,7 +143,11 @@ class quadrotor:
 
         # Control motors
         self.att_d = np.array([phi_d, the_d, self.yaw_d])
-        self.control_att()
+        if self.att_con == 0:
+            self.control_att()
+        elif self.att_con == 1:
+            self.control_att_geometric()
+
         self.w_d = np.sqrt(self.Tlmn_to_w.dot(np.append(self.T_d, self.lmn_d)))
 
     def step_estimator_xi_g(self, dt):
@@ -145,7 +174,11 @@ class quadrotor:
 
         # Control motors
         self.att_d = np.array([phi_d, the_d, self.yaw_d])
-        self.control_att()
+        if self.att_con == 0:
+            self.control_att()
+        elif self.att_con == 1:
+            self.control_att_geometric()
+
         self.w_d = np.sqrt(self.Tlmn_to_w.dot(np.append(self.T_d, self.lmn_d)))
 
     def step_estimator_xi_CD(self, dt):
@@ -165,7 +198,7 @@ class quadrotor:
             if self.w_d[i] < 0:
                 self.w_d[i] = 0
             elif self.w_d[i] > 500:
-                sel.w_d[i] = 500
+                self.w_d[i] = 500
 
         e_w = self.w - self.w_d
         w_dot = -self.kw*np.identity(4).dot(e_w)
@@ -256,6 +289,31 @@ class quadrotor:
 
         R = Rx.dot(Ry).dot(Rz)
         return R
+
+    # Rotation matrix from Nav to given Body attitude
+    def Rotd_bn(self, phi, theta, psi):
+        cphi = np.cos(phi)
+        sphi = np.sin(phi)
+        cthe = np.cos(theta)
+        sthe = np.sin(theta)
+        cpsi = np.cos(psi)
+        spsi = np.sin(psi)
+
+        Rx = np.array([[1,    0,      0], \
+                       [0,  cphi,  sphi], \
+                       [0, -sphi,  cphi]])
+
+        Ry = np.array([[cthe,  0,  -sthe], \
+                       [   0,  1,      0], \
+                       [sthe,  0,   cthe]])
+
+        Rz = np.array([[ cpsi,  spsi, 0], \
+                       [-spsi,  cpsi, 0], \
+                       [    0,    0, 1]])
+
+        R = Rx.dot(Ry).dot(Rz)
+        return R
+
     
     # Propagation matrix for computing the angular velocity of the attitude
     def R_pqr(self):
@@ -271,3 +329,13 @@ class quadrotor:
                       [0, sphi/cthe, cphi/cthe]])
         return R
 
+    # Building a tensor from vector and viceversa
+    def build_tensor_from_vector(self, a, b, c):
+        T = np.array([[ 0, -c,  b],
+                      [ c,  0, -a],
+                      [-b,  a,  0]])
+        return T
+
+    def build_vector_from_tensor(self, T):
+        v = np.array([T[2, 1], T[0, 2], T[1, 0]])
+        return v

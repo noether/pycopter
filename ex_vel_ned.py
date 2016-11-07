@@ -53,7 +53,7 @@ fig = pl.figure(0)
 axis3d = fig.add_subplot(111, projection='3d')
 
 # Desired position and heading
-v_2D_d = np.array([1.3, -0.5])
+v_2D_d = np.array([2, -0.5])
 alt_d = -8
 q1.yaw_d = np.pi/3
 
@@ -69,9 +69,9 @@ for t in time:
         pl.figure(0)
         axis3d.cla()
         ani.draw3d(axis3d, q1.xyz, q1.Rot_bn(), quadcolor[0])
-        axis3d.set_xlim(-100, 100)
-        axis3d.set_ylim(-100, 100)
-        axis3d.set_zlim(0, 10)
+        axis3d.set_xlim(-10, 10)
+        axis3d.set_ylim(-10, 10)
+        axis3d.set_zlim(0, 15)
         axis3d.set_xlabel('South [m]')
         axis3d.set_ylabel('East [m]')
         axis3d.set_zlabel('Up [m]')

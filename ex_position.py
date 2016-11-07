@@ -54,7 +54,7 @@ axis3d = fig.add_subplot(111, projection='3d')
 pl.figure(0)
 
 # Desired position and heading
-xyz_d = np.array([15, 0, -10])
+xyz_d = np.array([5, 3, -10])
 q1.yaw_d = -np.pi/4
 
 for t in time:
