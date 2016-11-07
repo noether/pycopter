@@ -35,4 +35,6 @@
 *.pyc
 
 # images
+./images
 *.png
+*.gif
