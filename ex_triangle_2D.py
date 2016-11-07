@@ -117,6 +117,11 @@ for t in time:
         axis3d.set_title("Time %.3f s" %t)
         pl.pause(0.001)
         pl.draw()
+        #namepic = '%i'%it
+        #digits = len(str(it))
+        #for j in range(0, 5-digits):
+        #    namepic = '0' + namepic
+        #pl.savefig("./images/%s.png"%namepic)
         
         pl.figure(1)
         pl.clf()
