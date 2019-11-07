@@ -104,7 +104,9 @@ class quadrotor:
         self.lmn_d = M
 
 
-    ## Lyapunov based on controllers
+    ## Lyapunov based controllers
+
+    # Input: Desired 3D position
     def set_xyz_ned_lya(self, xyz_d):
         e_alt  = self.xyz[2] - xyz_d[2]
         self.e_alt = e_alt
@@ -129,6 +131,7 @@ class quadrotor:
 
         self.w_d = np.sqrt(self.Tlmn_to_w.dot(np.append(self.T_d, self.lmn_d)))
 
+    # Input: Desired 2D acceleration, Desired altitude
     def set_a_2D_alt_lya(self, a_2d_d, altitude_d):
         e_alt  = self.xyz[2] - altitude_d
         self.e_alt = e_alt
@@ -154,6 +157,7 @@ class quadrotor:
         self.xi_g = self.xi_g + self.k_xi_g_v*self.v_ned[2]*dt \
         + self.k_xi_g_e_alt*self.e_alt*dt
 
+    # Input: Desired 2D velocity, Desired altitude
     def set_v_2D_alt_lya(self, vxy_d, alt_d):
         e_alt  = self.xyz[2] - alt_d
         self.e_alt = e_alt
