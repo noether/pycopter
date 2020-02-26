@@ -237,8 +237,8 @@ class quadrotor:
                 self.crashed = 1
             self.v_ned[0:3] = 0
         else:
+            self.xyz = self.xyz + self.v_ned*dt + 0.5*Rbn.T.dot(p_ddot)*dt*dt
             self.v_ned = self.v_ned + Rbn.T.dot(p_ddot)*dt
-            self.xyz = self.xyz + self.v_ned*dt
 
     # Forces and moments given by motors and environment
     def rotors_forces_moments(self):
